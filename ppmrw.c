@@ -1,10 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
-//int p3top3(FILE input, FILE output);
-//int p3top6(FILE input, FILE output);
-//int p6top6(FILE input, FILE output);
-//int p6top3(FILE input, FILE output);
+//int p3top3(FILE input, int width, int height, FILE output);
+//int p3top6(FILE input, int width, int height, FILE output);
+//int p6top6(FILE input, int width, int height, FILE output);
+//int p6top3(FILE input, int width, int height, FILE output);
 
 typedef struct RGBPixelpack{
   unsigned char R, G, B;
@@ -12,13 +13,13 @@ typedef struct RGBPixelpack{
 
 RGBPixelpack;
 
-//int p3top3(FILE input, FILE output){}
+//int p3top3(FILE input, int width, int height, FILE output){}
 
-//int p3top6(FILE input, FILE output){}
+//int p3top6(FILE input, int width, int height, FILE output){}
 
-//int p6top6(FILE input, FILE output){}
+//int p6top6(FILE input, int width, int height, FILE output){}
 
-//int p6top3(FILE input, FILE output){}
+//int p6top3(FILE input, int width, int height, FILE output){}
 
 int main(int argc, char *argv[]){
   if (argc != 3) {
@@ -38,17 +39,55 @@ int main(int argc, char *argv[]){
     fprintf(stderr, "Error: Not a supported file format\n");
     return(1);
   }
+
+  rewind(inputfile);
+  char throwawaybuff[0x1000];
+  fgets(throwawaybuff, sizeof(throwawaybuff), inputfile);
+  char e;
+  while(e=fgetc(inputfile)){
+    if (e == '#' || e == '\n'){
+      fgets(throwawaybuff, sizeof(throwawaybuff), inputfile);
+    }
+    else if(e != '#')
+      break;
+  }
+  char widthxheightbuff[0x1000];
+  ungetc(e, inputfile);
+  fgets(widthxheightbuff, sizeof(widthxheightbuff), inputfile);
+  char widtharr[0x100];
+  char heightarr[0x100];
+
+  strcpy(widtharr, strtok(widthxheightbuff, " "));
+  strcpy(heightarr, strtok(NULL, " "));
+
+  int width;
+  int height;
+
+  sscanf(widtharr, "%d", &width);
+  sscanf(heightarr, "%d", &height);
+
+
+  char maxvalbuff[0x1000];
+  fgets(maxvalbuff, sizeof(maxvalbuff), inputfile);
+
+  int maxval;
+  sscanf(maxvalbuff, "%d", &maxval);
+
+  if (maxval > 255 || maxval < 128){
+    fprintf(stderr, "Error: Max color value incorrect");
+    return(1);
+  }
   if (d == '3' && i == '3'){
-    p3top3(inputfile, outputfile);
+    p3top3(inputfile, width, height, outputfile);
   }
   else if (d == '3' && i == '6'){
-    p3top6(inputfile, outputfile);
+    p3top6(inputfile, width, height, outputfile);
   }
   else if (d == '6' && i == '6'){
-    p6top6(inputfile, outputfile);
+    p6top6(inputfile, width, height, outputfile);
   }
   else if (d == '6' && i == '3'){
-    p6top3(inputfile, outputfile);
+    p6top3(inputfile, width, height, outputfile);
   }
   fclose(outputfile);
   fclose(inputfile);
