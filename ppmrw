@@ -1,0 +1,25 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+typedef struct RGBPixelpack{
+  unsigned char R, G, B;
+}
+
+
+
+int main(int argc, char *argv[]){
+  if [argc != 3] {
+    printf("usage: magicnumber input.ppm output.ppm\n")
+  }
+  FILE *fh = fopen(argv[2], "r");
+  int c = fgetc(fh);
+  if (c != 'P'){
+    fprintf(stderr, "Error: Not a supported file format");
+  }
+  int d = fgetc(fh);
+  if (d != '3' && d != '6'){
+    fprintf(stderr, "Error: Not a supported file format");
+  }
+  int fclose(argv[2]);
+  return(1);
+}
