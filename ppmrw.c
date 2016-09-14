@@ -18,22 +18,14 @@ RGBPixelpack;
 
 int p3top3(FILE input, int width, int height, FILE output){
 
-  pixelbuffer = malloc(sizeof(RGBPixelpack)*width*height);
-  rewind(input);
-  char headerdatabuffer[0x1000];
-  fgets(headerdatabuffer, sizeof(headerdatabuffer), input);
-  char e;
-  while(e=fgetc(input)){
-    if (e == '#' || e == '\n'){
-      fgets(headerdatabuffer, sizeof(headerdatabuffer), input);
-    }
-    else if(e != '#')
-      break;
+  char pixelbuffer[0x1000];
+  char c = fgetc(input);
+  while (c != EOF){
+    ungetc(d, input);
+    fgets(pixelbuffer, sizeof(pixelbuffer), input);
+    fprintf(output, "%s", pixelbuffer);
   }
-  ungetc(e, inputfile);
-  fgets(headerdatabuffer, sizeof(headerdatabuffer), input);
-  fgets(headerdatabuffer, sizeof(headerdatabuffer), input);
-
+  return(0);
 
 }
 
