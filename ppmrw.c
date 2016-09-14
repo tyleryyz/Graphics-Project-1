@@ -29,7 +29,16 @@ int p3top3(FILE input, int width, int height, FILE output){
 
 }
 
-//int p3top6(FILE input, int width, int height, FILE output){}
+int p3top6(FILE input, int width, int height, FILE output){
+  char pixelbuffer[0x1000];
+  char c = fgetc(input);
+  while (c != EOF){
+    ungetc(d, input);
+    fgets(pixelbuffer, sizeof(pixelbuffer), input);
+    fprintf(output, "%s", pixelbuffer);
+  }
+  return(0);
+}
 
 //int p6top6(FILE input, int width, int height, FILE output){}
 
