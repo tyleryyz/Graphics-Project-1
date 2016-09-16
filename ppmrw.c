@@ -8,41 +8,156 @@ int p6top6(FILE *input, int width, int height, FILE *output);
 int p6top3(FILE *input, int width, int height, FILE *output);
 
 typedef struct ImageData{
-  unsigned char R, G, B;
+  unsigned char r, g, b;
 }
-
-//fread for bits
-//for loops widthxheight for ascii
-
 ImageData;
-ImageData *pixbuff;
 
 int p3top3(FILE *input, int width, int height, FILE *output){
-  char p3pixelbuffer[0x1000];
-  char p3eof;
-  while (p3eof = fgetc(input)){
-    if(p3eof != EOF){
-      ungetc(p3eof, input);
-      fgets(p3pixelbuffer, sizeof(p3pixelbuffer), input);
-      fprintf(output, "%s", p3pixelbuffer);
+  ImageData pixbuff[height][width];
+  char next;
+  int rows;
+  int cols;
+  int redi;
+  int greeni;
+  int bluei;
+  for (rows = 0; rows < height; rows++){
+    for (cols = 0; cols < width; cols++){
+      char r[4] = {"\0"};
+      char g[4] = {"\0"};
+      char b[4] = {"\0"};
+      next = fgetc(input);
+      for (redi = 0; redi < 3; redi++){
+        if (isspace(next) || next == '\n'){
+          break;
+        }
+        r[redi] = next;
+        next = fgetc(input);
+      }
+      while (isspace(next) || next == '\n'){
+        next = fgetc(input);
+      }
+      for (greeni = 0; greeni < 3; greeni++){
+        if (isspace(next) || next == '\n'){
+          break;
+        }
+        g[greeni] = next;
+        next = fgetc(input);
+      }
+      while (isspace(next) || next == '\n'){
+        next = fgetc(input);
+      }
+      for (bluei = 0; bluei < 3; bluei++){
+        if (isspace(next) || next == '\n'){
+          break;
+        }
+        b[bluei] = next;
+        next = fgetc(input);
+      }
+      while (isspace(next) || next == '\n'){
+        next = fgetc(input);
+      }
+      ungetc(next, input);
+      int red = atoi(r);
+      int green = atoi(g);
+      int blue = atoi(b);
+
+      pixbuff[rows][cols].r = red;
+      pixbuff[rows][cols].g = green;
+      pixbuff[rows][cols].b = blue;
     }
   }
+  for (rows = 0; rows < height; rows++){
+    for (cols = 0; cols < width; cols++){
+      int redout = pixbuff[rows][cols].r;
+      int greenout = pixbuff[rows][cols].g;
+      int blueout = pixbuff[rows][cols].b;
+      fprintf(output, " %i %i %i ", redout, greenout, blueout);
+    }
+  }
+
+  fclose(input);
   fclose(output);
   return(0);
-
+  exit(0);
 }
 
-int p3top6(FILE *input, int width, int height, FILE *output){}
+int p3top6(FILE *input, int width, int height, FILE *output){
+  ImageData pixbuff[height][width];
+  char next;
+  int rows;
+  int cols;
+  int redi;
+  int greeni;
+  int bluei;
+  for (rows = 0; rows < height; rows++){
+    for (cols = 0; cols < width; cols++){
+      char r[4] = {"\0"};
+      char g[4] = {"\0"};
+      char b[4] = {"\0"};
+      next = fgetc(input);
+      for (redi = 0; redi < 3; redi++){
+        if (isspace(next) || next == '\n'){
+          break;
+        }
+        r[redi] = next;
+        next = fgetc(input);
+      }
+      while (isspace(next) || next == '\n'){
+        next = fgetc(input);
+      }
+      for (greeni = 0; greeni < 3; greeni++){
+        if (isspace(next) || next == '\n'){
+          break;
+        }
+        g[greeni] = next;
+        next = fgetc(input);
+      }
+      while (isspace(next) || next == '\n'){
+        next = fgetc(input);
+      }
+      for (bluei = 0; bluei < 3; bluei++){
+        if (isspace(next) || next == '\n'){
+          break;
+        }
+        b[bluei] = next;
+        next = fgetc(input);
+      }
+      while (isspace(next) || next == '\n'){
+        next = fgetc(input);
+      }
+      ungetc(next, input);
+      int red = atoi(r);
+      int green = atoi(g);
+      int blue = atoi(b);
+
+      pixbuff[rows][cols].r = red;
+      pixbuff[rows][cols].g = green;
+      pixbuff[rows][cols].b = blue;
+    }
+  }
+}
 
 int p6top6(FILE *input, int width, int height, FILE *output){
-  pixbuff = malloc(sizeof(ImageData) * width * height);
-  fread(pixbuff, sizeof(ImageData), width*height, input);
-  fwrite(pixbuff, width*height, sizeof(ImageData), output);
-  fclose(output);
+  //pixbuff = malloc(sizeof(ImageData) * width * height);
+  //fread(pixbuff, sizeof(ImageData), width*height, input);
+  //fwrite(pixbuff, width*height, sizeof(ImageData), output);
+  //fclose(output);
   return(0);
 }
 
-int p6top3(FILE *input, int width, int height, FILE *output){}
+int p6top3(FILE *input, int width, int height, FILE *output){
+  /*pixbuff = malloc(sizeof(ImageData) * width * height);
+  fread(pixbuff, sizeof(ImageData), width*height, input);
+  int i = height;
+  int j = 0;
+  for (i; i > 0; i--){
+    for (j; j < width; j++){
+      fprintf(output, "%c", pixbuff[j].r);
+    }
+  }
+  //fclose(output);
+  */return(0);
+}
 
 int main(int argc, char *argv[]){
   if (argc != 4) {
@@ -110,6 +225,7 @@ int main(int argc, char *argv[]){
 
   if (maxval > 255 || maxval < 128){
     fprintf(stderr, "Error: Max color value incorrect");
+    fclose(inputfile);
     return(1);
   }
   if (d == '3' && i == 3){
@@ -124,7 +240,5 @@ int main(int argc, char *argv[]){
   else if (d == '6' && i == 3){
     p6top3(inputfile, width, height, outputfile);
   }
-  fclose(outputfile);
-  fclose(inputfile);
   return(0);
 }
