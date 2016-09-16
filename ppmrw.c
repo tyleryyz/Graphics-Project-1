@@ -227,6 +227,9 @@ int main(int argc, char *argv[]){
   FILE *outputfile = fopen(argv[3], "w");
   char c = fgetc(inputfile);
   int i = atoi (argv[1]);
+  if (i != '3' || i != '6'){
+    fprintf(stderr, "%s", "Error: Attempting to write to unsupported file format")
+  }
   if (c != 'P'){
     fprintf(stderr, "Error: Not a supported file format\n");
     return(1);
@@ -282,7 +285,7 @@ int main(int argc, char *argv[]){
   int maxval;
   sscanf(maxvalbuff, "%i", &maxval);
 
-  if (maxval > 255 || maxval < 128){
+  if (maxval != 255){
     fprintf(stderr, "Error: Max color value incorrect");
     fclose(inputfile);
     return(1);
