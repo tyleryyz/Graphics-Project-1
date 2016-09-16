@@ -11,7 +11,6 @@ typedef struct ImageData{
   unsigned char r, g, b;
 }
 ImageData;
-
 int p3top3(FILE *input, int width, int height, FILE *output){
   ImageData pixbuff[height][width];
   char next;
@@ -135,29 +134,89 @@ int p3top6(FILE *input, int width, int height, FILE *output){
       pixbuff[rows][cols].b = blue;
     }
   }
+  for (rows = 0; rows < height; rows++){
+    for (cols = 0; cols < width; cols++){
+        int p6redout[1] = {pixbuff[rows][cols].r};
+        int p6greenout[1] = {pixbuff[rows][cols].g};
+        int p6blueout[1] = {pixbuff[rows][cols].b};
+
+        fwrite(p6redout, 1, 1, output);
+        fwrite(p6greenout, 1, 1, output);
+        fwrite(p6blueout, 1, 1, output);
+    }
+  }
+  fclose(input);
+  fclose(output);
+  exit(0);
 }
 
 int p6top6(FILE *input, int width, int height, FILE *output){
-  //pixbuff = malloc(sizeof(ImageData) * width * height);
-  //fread(pixbuff, sizeof(ImageData), width*height, input);
-  //fwrite(pixbuff, width*height, sizeof(ImageData), output);
-  //fclose(output);
-  return(0);
+  ImageData pixbuff[height][width];
+  int rows;
+  int cols;
+  for (rows = 0; rows < height; rows++){
+    for (cols = 0; cols < width; cols++){
+      int p6redout[1];
+      int p6greenout[1];
+      int p6blueout[1];
+
+      fread(p6redout, 1, 1, input);
+      fread(p6greenout, 1, 1, input);
+      fread(p6blueout, 1, 1, input);
+
+      pixbuff[rows][cols].r = p6redout[0];
+      pixbuff[rows][cols].g = p6greenout[0];
+      pixbuff[rows][cols].b = p6blueout[0];
+    }
+  }
+  for (rows = 0; rows < height; rows++){
+    for (cols = 0; cols < width; cols++){
+        int p6redout[1] = {pixbuff[rows][cols].r};
+        int p6greenout[1] = {pixbuff[rows][cols].g};
+        int p6blueout[1] = {pixbuff[rows][cols].b};
+
+        fwrite(p6redout, 1, 1, output);
+        fwrite(p6greenout, 1, 1, output);
+        fwrite(p6blueout, 1, 1, output);
+    }
+  }
+  fclose(input);
+  fclose(output);
+  exit(0);
 }
 
 int p6top3(FILE *input, int width, int height, FILE *output){
-  /*pixbuff = malloc(sizeof(ImageData) * width * height);
-  fread(pixbuff, sizeof(ImageData), width*height, input);
-  int i = height;
-  int j = 0;
-  for (i; i > 0; i--){
-    for (j; j < width; j++){
-      fprintf(output, "%c", pixbuff[j].r);
+  ImageData pixbuff[height][width];
+  int rows;
+  int cols;
+  for (rows = 0; rows < height; rows++){
+    for (cols = 0; cols < width; cols++){
+      int p6redout[1];
+      int p6greenout[1];
+      int p6blueout[1];
+
+      fread(p6redout, 1, 1, input);
+      fread(p6greenout, 1, 1, input);
+      fread(p6blueout, 1, 1, input);
+
+      pixbuff[rows][cols].r = p6redout[0];
+      pixbuff[rows][cols].g = p6greenout[0];
+      pixbuff[rows][cols].b = p6blueout[0];
     }
   }
-  //fclose(output);
-  */return(0);
+  for (rows = 0; rows < height; rows++){
+    for (cols = 0; cols < width; cols++){
+      int redout = pixbuff[rows][cols].r;
+      int greenout = pixbuff[rows][cols].g;
+      int blueout = pixbuff[rows][cols].b;
+      fprintf(output, " %i %i %i ", redout, greenout, blueout);
+    }
+  }
+  fclose(input);
+  fclose(output);
+  exit(0);
 }
+
 
 int main(int argc, char *argv[]){
   if (argc != 4) {
