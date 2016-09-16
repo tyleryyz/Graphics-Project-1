@@ -227,16 +227,17 @@ int main(int argc, char *argv[]){
   FILE *outputfile = fopen(argv[3], "w");
   char c = fgetc(inputfile);
   int i = atoi (argv[1]);
-  if (i != '3' || i != '6'){
-    fprintf(stderr, "%s", "Error: Attempting to write to unsupported file format")
+  if (i != 3 && i != 6){
+    fprintf(stderr, "%s\n", "Error: Attempting to write to unsupported file format\n");
+    return(1);
   }
   if (c != 'P'){
-    fprintf(stderr, "Error: Not a supported file format\n");
+    fprintf(stderr, "%s\n", "Error: Not a supported file format\n");
     return(1);
   }
   char d = fgetc(inputfile);
   if (d != '3' && d != '6'){
-    fprintf(stderr, "Error: Not a supported file format\n");
+    fprintf(stderr, "%s\n", "Error: Not a supported file format\n");
     return(1);
   }
 
